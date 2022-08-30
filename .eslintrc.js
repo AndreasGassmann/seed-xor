@@ -59,9 +59,9 @@ module.exports = {
         "@typescript-eslint/explicit-function-return-type": [
             "error",
             {
-                "allowExpressions": false,
-                "allowTypedFunctionExpressions": false,
-                "allowHigherOrderFunctions": false,
+                "allowExpressions": true,
+                "allowTypedFunctionExpressions": true,
+                "allowHigherOrderFunctions": true,
                 "allowDirectConstAssertionInArrowFunctions": true,
                 "allowConciseArrowFunctionExpressionsStartingWithVoid": true
             }
@@ -81,10 +81,7 @@ module.exports = {
                 "allowTypedFunctionExpressions": false
             }
         ],
-        "@typescript-eslint/indent": [
-            "error",
-            2
-        ],
+        "@typescript-eslint/indent": 0,
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/no-empty-function": "error",
         "@typescript-eslint/no-empty-interface": "error",
@@ -125,7 +122,7 @@ module.exports = {
         "@typescript-eslint/unified-signatures": "error",
         "arrow-parens": [
             "error",
-            "as-needed"
+            "always"
         ],
         "complexity": "off",
         "constructor-super": "error",
