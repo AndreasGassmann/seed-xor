@@ -28,8 +28,7 @@ const getRandomEntropy = () => {
         window.crypto.getRandomValues(randomBuffer);
     }
     else {
-        /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
-        const webcrypto = require('crypto').webcrypto;
+        const webcrypto = require('crypto').webcrypto; // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         webcrypto.getRandomValues(randomBuffer);
     }
     return Promise.resolve((0, exports.sha256)((0, exports.sha256)(randomBuffer)));
