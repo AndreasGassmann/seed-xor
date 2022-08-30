@@ -1,0 +1,50 @@
+import * as bip39 from 'bip39';
+import * as createHash from 'create-hash';
+
+export const toHexString = (bytes: Uint8Array) =>
+  bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+
+export const bitwiseXorHexString = (hexStrings: string[]) => {
+  var result = '';
+  for (let index = 0; index < hexStrings[0].length; index++) {
+    let temp = parseInt(hexStrings[0].charAt(index), 16);
+    for (let x = 1; x < hexStrings.length; x++) {
+      temp = temp ^ parseInt(hexStrings[x].charAt(index), 16);
+    }
+    result += temp.toString(16).toUpperCase();
+  }
+  return result;
+};
+
+export const sha256 = (value: string | Buffer | Uint32Array): string => {
+  const hash: Uint8Array = createHash('sha256').update(value).digest();
+
+  return toHexString(hash);
+};
+
+export const getRandomEntropy = async (): Promise<string> => {
+  const randomBuffer: Uint32Array = new Uint32Array(32);
+
+  if (typeof window !== 'undefined') {
+    window.crypto.getRandomValues(randomBuffer);
+  } else {
+    const webcrypto = require('crypto').webcrypto;
+    webcrypto.getRandomValues(randomBuffer);
+  }
+
+  return sha256(sha256(randomBuffer));
+};
+
+export const getDeterministicEntropyFromMnemonic = async (
+  mnemonic: string,
+  part: number,
+  nofParts: number,
+): Promise<string> => {
+  const salt = 'Batshitoshi';
+  const rawSecret = bip39.mnemonicToEntropy(mnemonic);
+  const partsText = `${part} of ${nofParts} parts`;
+
+  const str = `${salt} ${rawSecret} ${partsText}`;
+
+  return sha256(str);
+};
