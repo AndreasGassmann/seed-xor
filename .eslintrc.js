@@ -120,6 +120,7 @@ module.exports = {
             }
         ],
         "@typescript-eslint/unified-signatures": "error",
+        "@typescript-eslint/require-await": 0,
         "arrow-parens": [
             "error",
             "always"

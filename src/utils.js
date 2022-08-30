@@ -22,7 +22,7 @@ const sha256 = (value) => {
     return (0, exports.toHexString)(hash);
 };
 exports.sha256 = sha256;
-const getRandomEntropy = () => {
+const getRandomEntropy = async () => {
     const randomBuffer = new Uint32Array(32);
     if (typeof window !== 'undefined') {
         window.crypto.getRandomValues(randomBuffer);
@@ -31,14 +31,14 @@ const getRandomEntropy = () => {
         const webcrypto = require('crypto').webcrypto; // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         webcrypto.getRandomValues(randomBuffer);
     }
-    return Promise.resolve((0, exports.sha256)((0, exports.sha256)(randomBuffer)));
+    return (0, exports.sha256)((0, exports.sha256)(randomBuffer));
 };
 exports.getRandomEntropy = getRandomEntropy;
-const getDeterministicEntropyFromMnemonic = (mnemonic, part, nofParts) => {
+const getDeterministicEntropyFromMnemonic = async (mnemonic, part, nofParts) => {
     const salt = 'Batshitoshi';
     const rawSecret = bip39.mnemonicToEntropy(mnemonic);
     const partsText = `${part} of ${nofParts} parts`;
     const str = `${salt} ${rawSecret} ${partsText}`;
-    return Promise.resolve((0, exports.sha256)(str));
+    return (0, exports.sha256)(str);
 };
 exports.getDeterministicEntropyFromMnemonic = getDeterministicEntropyFromMnemonic;

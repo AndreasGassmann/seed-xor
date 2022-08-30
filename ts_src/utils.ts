@@ -22,7 +22,7 @@ export const sha256 = (value: string | Buffer | Uint32Array): string => {
   return toHexString(hash);
 };
 
-export const getRandomEntropy = (): Promise<string> => {
+export const getRandomEntropy = async (): Promise<string> => {
   const randomBuffer: Uint32Array = new Uint32Array(32);
 
   if (typeof window !== 'undefined') {
@@ -32,10 +32,10 @@ export const getRandomEntropy = (): Promise<string> => {
     webcrypto.getRandomValues(randomBuffer);
   }
 
-  return Promise.resolve(sha256(sha256(randomBuffer)));
+  return sha256(sha256(randomBuffer));
 };
 
-export const getDeterministicEntropyFromMnemonic = (
+export const getDeterministicEntropyFromMnemonic = async (
   mnemonic: string,
   part: number,
   nofParts: number,
@@ -46,5 +46,5 @@ export const getDeterministicEntropyFromMnemonic = (
 
   const str = `${salt} ${rawSecret} ${partsText}`;
 
-  return Promise.resolve(sha256(str));
+  return sha256(str);
 };

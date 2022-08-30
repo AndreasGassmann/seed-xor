@@ -39,7 +39,7 @@ export const split = async (
   return shares.map((share) => bip39.entropyToMnemonic(share));
 };
 
-export const combine = (shares: string[]): Promise<string> => {
+export const combine = async (shares: string[]): Promise<string> => {
   if (shares.some((share) => !bip39.validateMnemonic(share))) {
     throw new Error('[SeedXOR]: Invalid mnemonic');
   }
@@ -50,7 +50,5 @@ export const combine = (shares: string[]): Promise<string> => {
     throw new Error('[SeedXOR]: Not all mnemonics are the same length');
   }
 
-  return Promise.resolve(
-    bip39.entropyToMnemonic(bitwiseXorHexString(entropies)),
-  );
+  return bip39.entropyToMnemonic(bitwiseXorHexString(entropies));
 };
