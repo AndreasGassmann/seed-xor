@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDeterministicEntropyFromMnemonic = exports.getRandomEntropy = exports.sha256Double = exports.bitwiseXorHexString = exports.mnemonicToEntropyLength = exports.hexToUint8Array = exports.toHexString = void 0;
 const bip39 = require("bip39");
-const createHash = require("create-hash");
+const sha256_1 = require("@noble/hashes/sha256");
 const toHexString = (bytes) => bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
 exports.toHexString = toHexString;
 const hexToUint8Array = (hexString) => {
@@ -48,8 +48,7 @@ const bitwiseXorHexString = (hexStrings) => {
 };
 exports.bitwiseXorHexString = bitwiseXorHexString;
 const sha256Double = (data) => {
-    const hash1 = createHash('sha256').update(data).digest();
-    return createHash('sha256').update(hash1).digest();
+    return (0, sha256_1.sha256)((0, sha256_1.sha256)(data));
 };
 exports.sha256Double = sha256Double;
 const getRandomEntropy = async (length = 32) => {

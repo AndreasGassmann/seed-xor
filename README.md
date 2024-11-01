@@ -100,9 +100,9 @@ We try to use only a minimal set of dependencies to reduce the attack surface of
 There are only 2 (non-dev) dependencies:
 
 - [bip39](https://www.npmjs.com/package/bip39)
-- [create-hash](https://www.npmjs.com/package/create-hash)
+- [@noble/hashes](https://www.npmjs.com/package/@noble/hashes)
 
-One of those repositories is owned by the [bitcoinjs](https://github.com/bitcoinjs) organization, one of them is managed by [crypto-browserify](https://github.com/crypto-browserify).
+One of those repositories is owned by the [bitcoinjs](https://github.com/bitcoinjs) organization, one of them is managed by [paulmillr](https://github.com/paulmillr/noble-hashes).
 
 ## Usages
 
