@@ -11,13 +11,17 @@ const split = async (mnemonic, numberOfShares = 2, useRandom = false) => {
     if (numberOfShares < 2 || numberOfShares > 4) {
         throw new Error('[SeedXOR]: Invalid number of shares');
     }
+    const entropyLength = (0, utils_1.mnemonicToEntropyLength)(mnemonic);
     const shares = [];
     for (let i = 0; i < numberOfShares - 1; i++) {
-        shares[i] = useRandom
-            ? await (0, utils_1.getRandomEntropy)()
-            : await (0, utils_1.getDeterministicEntropyFromMnemonic)(mnemonic, i + 1, numberOfShares);
+        shares.push(useRandom
+            ? await (0, utils_1.getRandomEntropy)(entropyLength)
+            : await (0, utils_1.getDeterministicEntropyFromMnemonic)(mnemonic, i, numberOfShares, entropyLength));
     }
     shares.push((0, utils_1.bitwiseXorHexString)([bip39.mnemonicToEntropy(mnemonic), ...shares]));
+    if (shares.some((share) => share.length !== shares[0].length)) {
+        throw new Error('[SeedXOR]: Not all final shares are the same length');
+    }
     return shares.map((share) => bip39.entropyToMnemonic(share));
 };
 exports.split = split;

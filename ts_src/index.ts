@@ -1,9 +1,9 @@
-import { getRandomEntropy, sha256 } from './utils';
+import { getRandomEntropy, sha256Double } from './utils';
 
 export { split, combine } from './seed-xor';
 
 const utils = {
-  sha256,
+  sha256Double,
   getRandomEntropy,
 };
 
