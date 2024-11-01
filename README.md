@@ -79,12 +79,12 @@ npm install
 npm test
 
 -------------|---------|----------|---------|---------|-------------------
-File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------|---------|----------|---------|---------|-------------------
-All files    |   98.52 |    93.75 |     100 |   98.03 |
- index.ts    |     100 |      100 |     100 |     100 |
- seed-xor.ts |     100 |      100 |     100 |     100 |
- utils.ts    |   97.22 |       50 |     100 |   96.42 | 29
+All files    |     100 |      100 |     100 |     100 |                   
+ index.ts    |     100 |      100 |     100 |     100 |                   
+ seed-xor.ts |     100 |      100 |     100 |     100 |                   
+ utils.ts    |     100 |      100 |     100 |     100 |                   
 -------------|---------|----------|---------|---------|-------------------
 ```
 
@@ -102,7 +102,7 @@ There are only 2 (non-dev) dependencies:
 - [bip39](https://www.npmjs.com/package/bip39)
 - [create-hash](https://www.npmjs.com/package/create-hash)
 
-1 of those repositories is owned by the [bitcoinjs](https://github.com/bitcoinjs) organization, one of them is managed by [crypto-browserify](https://github.com/crypto-browserify).
+One of those repositories is owned by the [bitcoinjs](https://github.com/bitcoinjs) organization, one of them is managed by [crypto-browserify](https://github.com/crypto-browserify).
 
 ## Usages
 
