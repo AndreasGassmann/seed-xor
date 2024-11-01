@@ -3,6 +3,7 @@ import {
   getDeterministicEntropyFromMnemonic,
   getRandomEntropy,
   bitwiseXorHexString,
+  mnemonicToEntropyLength,
 } from './utils';
 
 // https://github.com/Coldcard/firmware/blob/master/shared/xor_seed.py
@@ -20,21 +21,30 @@ export const split = async (
     throw new Error('[SeedXOR]: Invalid number of shares');
   }
 
+  const entropyLength = mnemonicToEntropyLength(mnemonic);
+
   const shares: string[] = [];
 
   for (let i = 0; i < numberOfShares - 1; i++) {
-    shares[i] = useRandom
-      ? await getRandomEntropy()
-      : await getDeterministicEntropyFromMnemonic(
-          mnemonic,
-          i + 1,
-          numberOfShares,
-        );
+    shares.push(
+      useRandom
+        ? await getRandomEntropy(entropyLength)
+        : await getDeterministicEntropyFromMnemonic(
+            mnemonic,
+            i,
+            numberOfShares,
+            entropyLength,
+          ),
+    );
   }
 
   shares.push(
     bitwiseXorHexString([bip39.mnemonicToEntropy(mnemonic), ...shares]),
   );
+
+  if (shares.some((share) => share.length !== shares[0].length)) {
+    throw new Error('[SeedXOR]: Not all final shares are the same length');
+  }
 
   return shares.map((share) => bip39.entropyToMnemonic(share));
 };
