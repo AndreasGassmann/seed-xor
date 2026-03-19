@@ -71,8 +71,7 @@ const ONES_24 =
   'zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote';
 const ZERO_12 =
   'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
-const ONES_12 =
-  'zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong';
+const ONES_12 = 'zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong';
 
 // These shares are taken from a github issue https://github.com/AndreasGassmann/seed-xor/issues/1
 const TEST_12_WORDS_COMBINED =
@@ -302,24 +301,24 @@ test('reconstruct seed', async () => {
 });
 
 test('reconstruct seed in any combination', async () => {
-  expect(
-    await combine([DOCS_SHARE_1, DOCS_SHARE_2, DOCS_SHARE_3]),
-  ).toBe(DOCS_COMBINED);
-  expect(
-    await combine([DOCS_SHARE_1, DOCS_SHARE_3, DOCS_SHARE_2]),
-  ).toBe(DOCS_COMBINED);
-  expect(
-    await combine([DOCS_SHARE_2, DOCS_SHARE_1, DOCS_SHARE_3]),
-  ).toBe(DOCS_COMBINED);
-  expect(
-    await combine([DOCS_SHARE_2, DOCS_SHARE_3, DOCS_SHARE_1]),
-  ).toBe(DOCS_COMBINED);
-  expect(
-    await combine([DOCS_SHARE_3, DOCS_SHARE_1, DOCS_SHARE_2]),
-  ).toBe(DOCS_COMBINED);
-  expect(
-    await combine([DOCS_SHARE_3, DOCS_SHARE_2, DOCS_SHARE_1]),
-  ).toBe(DOCS_COMBINED);
+  expect(await combine([DOCS_SHARE_1, DOCS_SHARE_2, DOCS_SHARE_3])).toBe(
+    DOCS_COMBINED,
+  );
+  expect(await combine([DOCS_SHARE_1, DOCS_SHARE_3, DOCS_SHARE_2])).toBe(
+    DOCS_COMBINED,
+  );
+  expect(await combine([DOCS_SHARE_2, DOCS_SHARE_1, DOCS_SHARE_3])).toBe(
+    DOCS_COMBINED,
+  );
+  expect(await combine([DOCS_SHARE_2, DOCS_SHARE_3, DOCS_SHARE_1])).toBe(
+    DOCS_COMBINED,
+  );
+  expect(await combine([DOCS_SHARE_3, DOCS_SHARE_1, DOCS_SHARE_2])).toBe(
+    DOCS_COMBINED,
+  );
+  expect(await combine([DOCS_SHARE_3, DOCS_SHARE_2, DOCS_SHARE_1])).toBe(
+    DOCS_COMBINED,
+  );
 });
 
 test('reconstruct 12 words seed from docs', async () => {
@@ -423,14 +422,30 @@ test('XOR of two identical zero seeds equals zero seed (12 words)', async () => 
 test('XOR of odd number of identical ones seeds equals ones seed (24 words)', async () => {
   expect(await combine([ONES_24, ONES_24, ONES_24])).toBe(ONES_24);
   expect(
-    await combine([ONES_24, ONES_24, ONES_24, ONES_24, ONES_24, ONES_24, ONES_24]),
+    await combine([
+      ONES_24,
+      ONES_24,
+      ONES_24,
+      ONES_24,
+      ONES_24,
+      ONES_24,
+      ONES_24,
+    ]),
   ).toBe(ONES_24);
 });
 
 test('XOR of odd number of identical ones seeds equals ones seed (12 words)', async () => {
   expect(await combine([ONES_12, ONES_12, ONES_12])).toBe(ONES_12);
   expect(
-    await combine([ONES_12, ONES_12, ONES_12, ONES_12, ONES_12, ONES_12, ONES_12]),
+    await combine([
+      ONES_12,
+      ONES_12,
+      ONES_12,
+      ONES_12,
+      ONES_12,
+      ONES_12,
+      ONES_12,
+    ]),
   ).toBe(ONES_12);
 });
 
@@ -455,9 +470,9 @@ test('XOR of even number of identical ones seeds equals zero seed (18 words)', a
 });
 
 test('fail if share is invalid', async () => {
-  await expect(
-    combine(['test', DOCS_SHARE_2, DOCS_SHARE_3]),
-  ).rejects.toThrow('[SeedXOR]: Invalid mnemonic');
+  await expect(combine(['test', DOCS_SHARE_2, DOCS_SHARE_3])).rejects.toThrow(
+    '[SeedXOR]: Invalid mnemonic',
+  );
 });
 
 test('fail if share is invalid length', async () => {
@@ -481,9 +496,7 @@ test('fail if called with invalid number of shares', async () => {
 });
 
 test('fail if shares have different lengths', async () => {
-  const spy = vi
-    .spyOn(utils, 'bitwiseXorHexString')
-    .mockReturnValue('1234');
+  const spy = vi.spyOn(utils, 'bitwiseXorHexString').mockReturnValue('1234');
 
   await expect(split(LOCAL_TEST_12_COMBINED, 2)).rejects.toThrow(
     '[SeedXOR]: Not all final shares are the same length',

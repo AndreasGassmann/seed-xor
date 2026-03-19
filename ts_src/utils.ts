@@ -59,7 +59,8 @@ export const sha256Double = (data: Uint8Array): Uint8Array => {
 export const getRandomEntropy = async (length = 32): Promise<string> => {
   const randomBuffer: Uint8Array = new Uint8Array(length);
 
-  const cryptoImpl = globalThis.crypto ?? (await import('node:crypto')).webcrypto;
+  const cryptoImpl =
+    globalThis.crypto ?? (await import('node:crypto')).webcrypto;
   cryptoImpl.getRandomValues(randomBuffer);
 
   return toHexString(sha256Double(randomBuffer).slice(0, length));
