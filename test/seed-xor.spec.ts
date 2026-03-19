@@ -48,6 +48,22 @@ const CC_TEST_12_SHARE_3 =
 const CC_TEST_12_COMBINED =
   'drama jeans craft mixture filter lamp invest suggest vacant neutral history swim';
 
+// 18 Words XOR 3-part test vector from Coldcard firmware tests
+const CC_TEST_18_SHARE_1 =
+  'example twelve meadow embrace neither sign ribbon equal inspire guess episode piece fatal unlock prefer unhappy vanish curtain';
+const CC_TEST_18_SHARE_2 =
+  'ostrich present hold dwarf area say act carpet eight jeans student warfare access cause offer suit dawn height';
+const CC_TEST_18_SHARE_3 =
+  'sure lawsuit half gym fatal column remain dash cage orchard frame reform robust social inspire online evolve lobster';
+const CC_TEST_18_COMBINED =
+  'ancient dish minute goddess smooth foil auction floor bean mimic scale transfer trumpet alter echo push mass task';
+
+// Edge case seeds from Coldcard firmware tests
+const ZERO_18 =
+  'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon agent';
+const ONES_18 =
+  'zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo when';
+
 // Edge case seeds from Coldcard firmware tests
 const ZERO_24 =
   'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art';
@@ -353,6 +369,49 @@ test('reconstruct 12 words seed from coldcard firmware tests', async () => {
   expect(reconstructed).toBe(CC_TEST_12_COMBINED);
 });
 
+test('reconstruct 18 words seed from coldcard firmware tests', async () => {
+  const reconstructed = await combine([
+    CC_TEST_18_SHARE_1,
+    CC_TEST_18_SHARE_2,
+    CC_TEST_18_SHARE_3,
+  ]);
+
+  expect(reconstructed).toBe(CC_TEST_18_COMBINED);
+});
+
+test('reconstruct 18 words seed in any combination', async () => {
+  expect(
+    await combine([CC_TEST_18_SHARE_1, CC_TEST_18_SHARE_2, CC_TEST_18_SHARE_3]),
+  ).toBe(CC_TEST_18_COMBINED);
+  expect(
+    await combine([CC_TEST_18_SHARE_1, CC_TEST_18_SHARE_3, CC_TEST_18_SHARE_2]),
+  ).toBe(CC_TEST_18_COMBINED);
+  expect(
+    await combine([CC_TEST_18_SHARE_2, CC_TEST_18_SHARE_1, CC_TEST_18_SHARE_3]),
+  ).toBe(CC_TEST_18_COMBINED);
+  expect(
+    await combine([CC_TEST_18_SHARE_3, CC_TEST_18_SHARE_2, CC_TEST_18_SHARE_1]),
+  ).toBe(CC_TEST_18_COMBINED);
+});
+
+test('split and recombine 18 words roundtrip', async () => {
+  const shares = await split(CC_TEST_18_COMBINED, 2);
+  const reconstructed = await combine(shares);
+  expect(reconstructed).toBe(CC_TEST_18_COMBINED);
+});
+
+test('split and recombine roundtrip (12 words, 3 parts)', async () => {
+  const shares = await split(CC_TEST_12_COMBINED, 3);
+  const reconstructed = await combine(shares);
+  expect(reconstructed).toBe(CC_TEST_12_COMBINED);
+});
+
+test('split and recombine roundtrip (24 words, 3 parts)', async () => {
+  const shares = await split(DOCS_COMBINED, 3);
+  const reconstructed = await combine(shares);
+  expect(reconstructed).toBe(DOCS_COMBINED);
+});
+
 test('XOR of two identical zero seeds equals zero seed (24 words)', async () => {
   expect(await combine([ZERO_24, ZERO_24])).toBe(ZERO_24);
 });
@@ -381,6 +440,18 @@ test('XOR of even number of identical ones seeds equals zero seed (24 words)', a
 
 test('XOR of even number of identical ones seeds equals zero seed (12 words)', async () => {
   expect(await combine([ONES_12, ONES_12, ONES_12, ONES_12])).toBe(ZERO_12);
+});
+
+test('XOR of two identical zero seeds equals zero seed (18 words)', async () => {
+  expect(await combine([ZERO_18, ZERO_18])).toBe(ZERO_18);
+});
+
+test('XOR of odd number of identical ones seeds equals ones seed (18 words)', async () => {
+  expect(await combine([ONES_18, ONES_18, ONES_18])).toBe(ONES_18);
+});
+
+test('XOR of even number of identical ones seeds equals zero seed (18 words)', async () => {
+  expect(await combine([ONES_18, ONES_18, ONES_18, ONES_18])).toBe(ZERO_18);
 });
 
 test('fail if share is invalid', async () => {

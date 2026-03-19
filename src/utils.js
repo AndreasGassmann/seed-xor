@@ -21,6 +21,9 @@ export const mnemonicToEntropyLength = (mnemonic) => {
     if (parts.length === 12) {
         return 16;
     }
+    else if (parts.length === 18) {
+        return 24;
+    }
     else if (parts.length === 24) {
         return 32;
     }
