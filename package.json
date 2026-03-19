@@ -1,6 +1,6 @@
 {
   "name": "seed-xor",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "type": "module",
   "description": "TypeScript/JavaScript implementation of Seed XOR: A simple way of securing seeds",
   "main": "src/index.js",

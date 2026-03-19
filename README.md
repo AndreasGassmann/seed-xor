@@ -1,6 +1,6 @@
 # Seed XOR
 
-[![GitHub Action](https://github.com/AndreasGassmann/seed-xor/workflows/Build%2C%20Test%20and%20Analyze/badge.svg)](https://github.com/AndreasGassmann/seed-xor/actions?query=workflow%3A%22Build%2C+Test+and+Analyze%22+branch%3Amain)
+[![GitHub Action](https://github.com/AndreasGassmann/seed-xor/workflows/Build%20and%20Test/badge.svg)](https://github.com/AndreasGassmann/seed-xor/actions?query=workflow%3A%22Build+and+Test%22+branch%3Amain)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![npm](https://img.shields.io/npm/v/seed-xor.svg?colorB=brightgreen)](https://www.npmjs.com/package/seed-xor)
 
