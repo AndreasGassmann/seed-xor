@@ -1,12 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.utils = exports.combine = exports.split = void 0;
-const utils_1 = require("./utils");
-var seed_xor_1 = require("./seed-xor");
-Object.defineProperty(exports, "split", { enumerable: true, get: function () { return seed_xor_1.split; } });
-Object.defineProperty(exports, "combine", { enumerable: true, get: function () { return seed_xor_1.combine; } });
+import { bitwiseXorHexString, getDeterministicEntropyFromMnemonic, getRandomEntropy, hexToUint8Array, mnemonicToEntropyLength, sha256Double, toHexString, } from './utils.js';
+export { split, combine } from './seed-xor.js';
 const utils = {
-    sha256Double: utils_1.sha256Double,
-    getRandomEntropy: utils_1.getRandomEntropy,
+    sha256Double,
+    getRandomEntropy,
+    toHexString,
+    hexToUint8Array,
+    bitwiseXorHexString,
+    mnemonicToEntropyLength,
+    getDeterministicEntropyFromMnemonic,
 };
-exports.utils = utils;
+export { utils };

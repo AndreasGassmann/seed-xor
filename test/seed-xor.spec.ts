@@ -1,5 +1,6 @@
-import { split, combine } from '../ts_src';
-import * as tape from 'tape';
+import { test, expect, vi } from 'vitest';
+import { split, combine } from '../ts_src/index.js';
+import * as utils from '../ts_src/utils.js';
 
 // These shares are taken from the Coldcard docs: https://github.com/Coldcard/firmware/blob/1c47b073fc933b2e216d73c980db9d3231b8dd30/docs/seed-xor.md#xor-seed-example-using-3-parts
 const DOCS_SHARE_1 =
@@ -19,6 +20,59 @@ const TUTORIAL_SHARE_2 =
 const TUTORIAL_COMBINED =
   'gain series drill glad laugh online that witness daring enough arm anger benefit honey convince cool fortune pigeon leg shallow evoke room hat knock';
 
+// 12 Words XOR Seed Example Using 3 Parts from the Coldcard docs
+const DOCS_12_SHARE_1 =
+  'romance wink lottery autumn shop bring dawn tongue range crater truth ability';
+const DOCS_12_SHARE_2 =
+  'boat unfair shell violin tree robust open ride visual forest vintage approve';
+const DOCS_12_SHARE_3 =
+  'lion misery divide hurry latin fluid camp advance illegal lab pyramid unhappy';
+const DOCS_12_COMBINED =
+  'cannon opinion leader nephew found yard metal galaxy crouch between real trade';
+
+// 12 Words XOR example from the Rust seedxor library: https://github.com/kaiwolfram/seed-xor
+const RUST_12_SHARE_1 =
+  'vault junior rather gentle fresh measure waste powder resemble ocean until body';
+const RUST_12_SHARE_2 =
+  'defy one debate situate jungle music achieve cradle fiscal govern intact acquire';
+const RUST_12_COMBINED =
+  'silent toe meat possible chair blossom wait occur this worth option boy';
+
+// 12 Words XOR 3-part test vector from Coldcard firmware tests
+const CC_TEST_12_SHARE_1 =
+  'become wool crumble brand camera cement gloom sell stand once connect stage';
+const CC_TEST_12_SHARE_2 =
+  'save saddle indicate embrace detail weasel spread life staff mushroom bicycle light';
+const CC_TEST_12_SHARE_3 =
+  'unlock damp injury tape enhance pause sheriff onion valley panic finger moon';
+const CC_TEST_12_COMBINED =
+  'drama jeans craft mixture filter lamp invest suggest vacant neutral history swim';
+
+// 18 Words XOR 3-part test vector from Coldcard firmware tests
+const CC_TEST_18_SHARE_1 =
+  'example twelve meadow embrace neither sign ribbon equal inspire guess episode piece fatal unlock prefer unhappy vanish curtain';
+const CC_TEST_18_SHARE_2 =
+  'ostrich present hold dwarf area say act carpet eight jeans student warfare access cause offer suit dawn height';
+const CC_TEST_18_SHARE_3 =
+  'sure lawsuit half gym fatal column remain dash cage orchard frame reform robust social inspire online evolve lobster';
+const CC_TEST_18_COMBINED =
+  'ancient dish minute goddess smooth foil auction floor bean mimic scale transfer trumpet alter echo push mass task';
+
+// Edge case seeds from Coldcard firmware tests
+const ZERO_18 =
+  'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon agent';
+const ONES_18 =
+  'zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo when';
+
+// Edge case seeds from Coldcard firmware tests
+const ZERO_24 =
+  'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art';
+const ONES_24 =
+  'zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote';
+const ZERO_12 =
+  'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+const ONES_12 = 'zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong';
+
 // These shares are taken from a github issue https://github.com/AndreasGassmann/seed-xor/issues/1
 const TEST_12_WORDS_COMBINED =
   'leisure twenty acoustic better student orient deer negative uniform enforce payment hill';
@@ -33,200 +87,162 @@ const LOCAL_TEST_12_COMBINED =
 const LOCAL_TEST_24_COMBINED =
   'shift ivory empty runway path enhance pony wisdom pair absorb dinner enhance oval dove achieve soldier wing annual zebra brother consider social glance pole';
 
-tape('create deterministic shares tutorial (2)', async (t) => {
+test('create deterministic shares tutorial (2)', async () => {
   const [share1, share2] = await split(TUTORIAL_COMBINED, 2);
 
-  t.equal(share1, TUTORIAL_SHARE_1);
-  t.equal(share2, TUTORIAL_SHARE_2);
+  expect(share1).toBe(TUTORIAL_SHARE_1);
+  expect(share2).toBe(TUTORIAL_SHARE_2);
 
   const reconstructed = await combine([share1, share2]);
 
-  t.equal(reconstructed, TUTORIAL_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(TUTORIAL_COMBINED);
 });
 
-tape('create deterministic shares 12 words (2)', async (t) => {
+test('create deterministic shares 12 words (2)', async () => {
   const [share1, share2] = await split(TEST_12_WORDS_COMBINED, 2);
 
-  t.equal(share1, TEST_12_WORDS_SHARE_1);
-  t.equal(share2, TEST_12_WORDS_SHARE_2);
+  expect(share1).toBe(TEST_12_WORDS_SHARE_1);
+  expect(share2).toBe(TEST_12_WORDS_SHARE_2);
 
   const reconstructed = await combine([share1, share2]);
 
-  t.equal(reconstructed, TEST_12_WORDS_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(TEST_12_WORDS_COMBINED);
 });
 
-tape('create shares (default)', async (t) => {
+test('create shares (default)', async () => {
   const [share1, share2] = await split(LOCAL_TEST_24_COMBINED);
 
-  t.equal(
-    share1,
+  expect(share1).toBe(
     'ice habit admit depth syrup satoshi flavor average green topic sign potato dynamic escape essence clerk rug they horse slender ceiling call venture cash',
   );
-  t.equal(
-    share2,
+  expect(share2).toBe(
     'remove burst enhance main labor vote young vicious welcome total voyage time sunny art erode top effort try myself stumble arm unique movie myself',
   );
 
   const reconstructed = await combine([share1, share2]);
 
-  t.equal(reconstructed, LOCAL_TEST_24_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(LOCAL_TEST_24_COMBINED);
 });
 
-tape('create shares 12 words (default)', async (t) => {
+test('create shares 12 words (default)', async () => {
   const [share1, share2] = await split(LOCAL_TEST_12_COMBINED);
 
-  t.equal(
-    share1,
+  expect(share1).toBe(
     'twenty enter fence exile lecture stereo party boss ribbon electric hat weasel',
   );
-  t.equal(
-    share2,
+  expect(share2).toBe(
     'dial nest brain hidden okay bacon noodle slow fuel lunar connect render',
   );
 
   const reconstructed = await combine([share1, share2]);
 
-  t.equal(reconstructed, LOCAL_TEST_12_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(LOCAL_TEST_12_COMBINED);
 });
 
-tape('create deterministic shares (2)', async (t) => {
+test('create deterministic shares (2)', async () => {
   const [share1, share2] = await split(LOCAL_TEST_24_COMBINED, 2);
 
-  t.equal(
-    share1,
+  expect(share1).toBe(
     'ice habit admit depth syrup satoshi flavor average green topic sign potato dynamic escape essence clerk rug they horse slender ceiling call venture cash',
   );
-  t.equal(
-    share2,
+  expect(share2).toBe(
     'remove burst enhance main labor vote young vicious welcome total voyage time sunny art erode top effort try myself stumble arm unique movie myself',
   );
 
   const reconstructed = await combine([share1, share2]);
 
-  t.equal(reconstructed, LOCAL_TEST_24_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(LOCAL_TEST_24_COMBINED);
 });
 
-tape('create deterministic shares (3)', async (t) => {
+test('create deterministic shares (3)', async () => {
   const [share1, share2, share3] = await split(LOCAL_TEST_24_COMBINED, 3);
 
-  t.equal(
-    share1,
+  expect(share1).toBe(
     'crowd loud stage idle lizard street capital camp resource digital quantum million light tower destroy chalk legend wrist main sand order ladder hockey people',
   );
-  t.equal(
-    share2,
+  expect(share2).toBe(
     'fat diagram object kangaroo there ridge hat episode witness left usual diesel elite pave install bind unfair truck seek direct ramp option just kiwi',
   );
-  t.equal(
-    share3,
+  expect(share3).toBe(
     'pepper soda agree reform seat chalk unaware number stage dragon gentle wing feature all embrace wood hard bullet river outer acoustic clay jeans latin',
   );
 
   const reconstructed = await combine([share1, share2, share3]);
 
-  t.equal(reconstructed, LOCAL_TEST_24_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(LOCAL_TEST_24_COMBINED);
 });
 
-tape('create deterministic shares 12 words (3)', async (t) => {
+test('create deterministic shares 12 words (3)', async () => {
   const [share1, share2, share3] = await split(LOCAL_TEST_12_COMBINED, 3);
 
-  t.equal(
-    share1,
+  expect(share1).toBe(
     'million nephew luxury copy boost cram edit slender account hint okay nut',
   );
-  t.equal(
-    share2,
+  expect(share2).toBe(
     'illness play accident famous galaxy super area course ritual switch apple country',
   );
-  t.equal(
-    share3,
+  expect(share3).toBe(
     'close unknown slim edit payment consider knife clown garment intact sting trick',
   );
 
   const reconstructed = await combine([share1, share2, share3]);
 
-  t.equal(reconstructed, LOCAL_TEST_12_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(LOCAL_TEST_12_COMBINED);
 });
 
-tape('create deterministic shares (4)', async (t) => {
+test('create deterministic shares (4)', async () => {
   const [share1, share2, share3, share4] = await split(
     LOCAL_TEST_24_COMBINED,
     4,
   );
 
-  t.equal(
-    share1,
+  expect(share1).toBe(
     'fix drastic zebra congress athlete right differ trigger mask produce repeat eternal occur system like fluid team slab normal age shock economy ride settle',
   );
-  t.equal(
-    share2,
+  expect(share2).toBe(
     'squeeze elbow man frost chaos memory typical shrug puppy hotel category stool cost similar stage drip lizard idle magnet remind reveal cruel thunder caution',
   );
-  t.equal(
-    share3,
+  expect(share3).toBe(
     'wild check length lonely slot giraffe someone maximum salad improve claim sustain sun range until wool train refuse question patch found exist tribe tube',
   );
-  t.equal(
-    share4,
+  expect(share4).toBe(
     'relief fee race erosion duty breeze salute foot already resemble lyrics argue uncle tomorrow risk citizen dolphin also duck artwork ask vacuum spirit people',
   );
 
   const reconstructed = await combine([share1, share2, share3, share4]);
 
-  t.equal(reconstructed, LOCAL_TEST_24_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(LOCAL_TEST_24_COMBINED);
 });
 
-tape('create deterministic shares 12 words (4)', async (t) => {
+test('create deterministic shares 12 words (4)', async () => {
   const [share1, share2, share3, share4] = await split(
     LOCAL_TEST_12_COMBINED,
     4,
   );
 
-  t.equal(
-    share1,
+  expect(share1).toBe(
     'develop genuine tissue pet beach frozen unaware grace dragon slow diagram cloud',
   );
-  t.equal(
-    share2,
+  expect(share2).toBe(
     'melody cruel organ license orbit theme talent shock text glare hamster polar',
   );
-  t.equal(
-    share3,
+  expect(share3).toBe(
     'boss scorpion hungry dolphin practice lonely where define garlic soldier garbage super',
   );
-  t.equal(
-    share4,
+  expect(share4).toBe(
     'key enrich fun edge shove width worry erosion charge pear estate bread',
   );
 
   const reconstructed = await combine([share1, share2, share3, share4]);
 
-  t.equal(reconstructed, LOCAL_TEST_12_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(LOCAL_TEST_12_COMBINED);
 });
 
-tape('create random shares and reconstruct', async (t) => {
+test('create random shares and reconstruct', async () => {
   {
     const [share1, share2] = await split(LOCAL_TEST_24_COMBINED, 2, true);
     const reconstructed = await combine([share1, share2]);
-    t.equal(reconstructed, LOCAL_TEST_24_COMBINED);
+    expect(reconstructed).toBe(LOCAL_TEST_24_COMBINED);
   }
   {
     const [share1, share2, share3] = await split(
@@ -235,7 +251,7 @@ tape('create random shares and reconstruct', async (t) => {
       true,
     );
     const reconstructed = await combine([share1, share2, share3]);
-    t.equal(reconstructed, LOCAL_TEST_24_COMBINED);
+    expect(reconstructed).toBe(LOCAL_TEST_24_COMBINED);
   }
   {
     const [share1, share2, share3, share4] = await split(
@@ -244,18 +260,15 @@ tape('create random shares and reconstruct', async (t) => {
       true,
     );
     const reconstructed = await combine([share1, share2, share3, share4]);
-    t.equal(reconstructed, LOCAL_TEST_24_COMBINED);
+    expect(reconstructed).toBe(LOCAL_TEST_24_COMBINED);
   }
-
-  t.end();
 });
 
-tape('create random shares and reconstruct 12 words', async (t) => {
+test('create random shares and reconstruct 12 words', async () => {
   {
     const [share1, share2] = await split(LOCAL_TEST_12_COMBINED, 2, true);
-    console.log([share1, share2]);
     const reconstructed = await combine([share1, share2]);
-    t.equal(reconstructed, LOCAL_TEST_12_COMBINED);
+    expect(reconstructed).toBe(LOCAL_TEST_12_COMBINED);
   }
   {
     const [share1, share2, share3] = await split(
@@ -264,7 +277,7 @@ tape('create random shares and reconstruct 12 words', async (t) => {
       true,
     );
     const reconstructed = await combine([share1, share2, share3]);
-    t.equal(reconstructed, LOCAL_TEST_12_COMBINED);
+    expect(reconstructed).toBe(LOCAL_TEST_12_COMBINED);
   }
   {
     const [share1, share2, share3, share4] = await split(
@@ -273,113 +286,221 @@ tape('create random shares and reconstruct 12 words', async (t) => {
       true,
     );
     const reconstructed = await combine([share1, share2, share3, share4]);
-    t.equal(reconstructed, LOCAL_TEST_12_COMBINED);
+    expect(reconstructed).toBe(LOCAL_TEST_12_COMBINED);
   }
-
-  t.end();
 });
 
-tape('reconstruct seed', async (t) => {
+test('reconstruct seed', async () => {
   const reconstructed = await combine([
     DOCS_SHARE_1,
     DOCS_SHARE_2,
     DOCS_SHARE_3,
   ]);
 
-  t.equal(reconstructed, DOCS_COMBINED);
-
-  t.end();
+  expect(reconstructed).toBe(DOCS_COMBINED);
 });
 
-tape('reconstruct seed in any combination', async (t) => {
-  t.equal(
-    await combine([DOCS_SHARE_1, DOCS_SHARE_2, DOCS_SHARE_3]),
+test('reconstruct seed in any combination', async () => {
+  expect(await combine([DOCS_SHARE_1, DOCS_SHARE_2, DOCS_SHARE_3])).toBe(
     DOCS_COMBINED,
   );
-  t.equal(
-    await combine([DOCS_SHARE_1, DOCS_SHARE_3, DOCS_SHARE_2]),
+  expect(await combine([DOCS_SHARE_1, DOCS_SHARE_3, DOCS_SHARE_2])).toBe(
     DOCS_COMBINED,
   );
-  t.equal(
-    await combine([DOCS_SHARE_2, DOCS_SHARE_1, DOCS_SHARE_3]),
+  expect(await combine([DOCS_SHARE_2, DOCS_SHARE_1, DOCS_SHARE_3])).toBe(
     DOCS_COMBINED,
   );
-  t.equal(
-    await combine([DOCS_SHARE_2, DOCS_SHARE_3, DOCS_SHARE_1]),
+  expect(await combine([DOCS_SHARE_2, DOCS_SHARE_3, DOCS_SHARE_1])).toBe(
     DOCS_COMBINED,
   );
-  t.equal(
-    await combine([DOCS_SHARE_3, DOCS_SHARE_1, DOCS_SHARE_2]),
+  expect(await combine([DOCS_SHARE_3, DOCS_SHARE_1, DOCS_SHARE_2])).toBe(
     DOCS_COMBINED,
   );
-  t.equal(
-    await combine([DOCS_SHARE_3, DOCS_SHARE_2, DOCS_SHARE_1]),
+  expect(await combine([DOCS_SHARE_3, DOCS_SHARE_2, DOCS_SHARE_1])).toBe(
     DOCS_COMBINED,
   );
-
-  t.end();
 });
 
-tape('fail if share is invalid', async (t) => {
-  t.plan(1);
+test('reconstruct 12 words seed from docs', async () => {
+  const reconstructed = await combine([
+    DOCS_12_SHARE_1,
+    DOCS_12_SHARE_2,
+    DOCS_12_SHARE_3,
+  ]);
 
-  combine(['test', DOCS_SHARE_2, DOCS_SHARE_3]).catch(() => {
-    t.pass();
-    t.end();
-  });
+  expect(reconstructed).toBe(DOCS_12_COMBINED);
 });
 
-tape('fail if share is invalid length', async (t) => {
-  t.plan(1);
-
-  combine([
-    'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-    DOCS_SHARE_2,
-    DOCS_SHARE_3,
-  ]).catch(() => {
-    t.pass();
-    t.end();
-  });
+test('reconstruct 12 words seed from docs in any combination', async () => {
+  expect(
+    await combine([DOCS_12_SHARE_1, DOCS_12_SHARE_2, DOCS_12_SHARE_3]),
+  ).toBe(DOCS_12_COMBINED);
+  expect(
+    await combine([DOCS_12_SHARE_1, DOCS_12_SHARE_3, DOCS_12_SHARE_2]),
+  ).toBe(DOCS_12_COMBINED);
+  expect(
+    await combine([DOCS_12_SHARE_2, DOCS_12_SHARE_1, DOCS_12_SHARE_3]),
+  ).toBe(DOCS_12_COMBINED);
+  expect(
+    await combine([DOCS_12_SHARE_2, DOCS_12_SHARE_3, DOCS_12_SHARE_1]),
+  ).toBe(DOCS_12_COMBINED);
+  expect(
+    await combine([DOCS_12_SHARE_3, DOCS_12_SHARE_1, DOCS_12_SHARE_2]),
+  ).toBe(DOCS_12_COMBINED);
+  expect(
+    await combine([DOCS_12_SHARE_3, DOCS_12_SHARE_2, DOCS_12_SHARE_1]),
+  ).toBe(DOCS_12_COMBINED);
 });
 
-tape('fail if seed is invalid', async (t) => {
-  t.plan(1);
+test('reconstruct 12 words seed from rust seedxor example', async () => {
+  const reconstructed = await combine([RUST_12_SHARE_1, RUST_12_SHARE_2]);
 
-  split('abandon').catch(() => {
-    t.pass();
-    t.end();
-  });
+  expect(reconstructed).toBe(RUST_12_COMBINED);
 });
 
-tape('fail if called with invalid number of shares', async (t) => {
-  t.plan(1);
+test('reconstruct 12 words seed from coldcard firmware tests', async () => {
+  const reconstructed = await combine([
+    CC_TEST_12_SHARE_1,
+    CC_TEST_12_SHARE_2,
+    CC_TEST_12_SHARE_3,
+  ]);
 
-  split(DOCS_COMBINED, 5 as any).catch(() => {
-    t.pass();
-    t.end();
-  });
+  expect(reconstructed).toBe(CC_TEST_12_COMBINED);
 });
 
-tape('fail if shares have different lengths', async (t) => {
-  t.plan(1);
+test('reconstruct 18 words seed from coldcard firmware tests', async () => {
+  const reconstructed = await combine([
+    CC_TEST_18_SHARE_1,
+    CC_TEST_18_SHARE_2,
+    CC_TEST_18_SHARE_3,
+  ]);
 
-  // Store original function
-  const originalBitwiseXor = require('../ts_src/utils').bitwiseXorHexString;
+  expect(reconstructed).toBe(CC_TEST_18_COMBINED);
+});
 
-  try {
-    // Mock the function to return a different length string
-    require('../ts_src/utils').bitwiseXorHexString = () => '1234';
+test('reconstruct 18 words seed in any combination', async () => {
+  expect(
+    await combine([CC_TEST_18_SHARE_1, CC_TEST_18_SHARE_2, CC_TEST_18_SHARE_3]),
+  ).toBe(CC_TEST_18_COMBINED);
+  expect(
+    await combine([CC_TEST_18_SHARE_1, CC_TEST_18_SHARE_3, CC_TEST_18_SHARE_2]),
+  ).toBe(CC_TEST_18_COMBINED);
+  expect(
+    await combine([CC_TEST_18_SHARE_2, CC_TEST_18_SHARE_1, CC_TEST_18_SHARE_3]),
+  ).toBe(CC_TEST_18_COMBINED);
+  expect(
+    await combine([CC_TEST_18_SHARE_3, CC_TEST_18_SHARE_2, CC_TEST_18_SHARE_1]),
+  ).toBe(CC_TEST_18_COMBINED);
+});
 
-    await split(LOCAL_TEST_12_COMBINED, 2);
-  } catch (error: any) {
-    t.equal(
-      error.message,
-      '[SeedXOR]: Not all final shares are the same length',
-    );
-  } finally {
-    // Restore original function
-    require('../ts_src/utils').bitwiseXorHexString = originalBitwiseXor;
-  }
+test('split and recombine 18 words roundtrip', async () => {
+  const shares = await split(CC_TEST_18_COMBINED, 2);
+  const reconstructed = await combine(shares);
+  expect(reconstructed).toBe(CC_TEST_18_COMBINED);
+});
 
-  t.end();
+test('split and recombine roundtrip (12 words, 3 parts)', async () => {
+  const shares = await split(CC_TEST_12_COMBINED, 3);
+  const reconstructed = await combine(shares);
+  expect(reconstructed).toBe(CC_TEST_12_COMBINED);
+});
+
+test('split and recombine roundtrip (24 words, 3 parts)', async () => {
+  const shares = await split(DOCS_COMBINED, 3);
+  const reconstructed = await combine(shares);
+  expect(reconstructed).toBe(DOCS_COMBINED);
+});
+
+test('XOR of two identical zero seeds equals zero seed (24 words)', async () => {
+  expect(await combine([ZERO_24, ZERO_24])).toBe(ZERO_24);
+});
+
+test('XOR of two identical zero seeds equals zero seed (12 words)', async () => {
+  expect(await combine([ZERO_12, ZERO_12])).toBe(ZERO_12);
+});
+
+test('XOR of odd number of identical ones seeds equals ones seed (24 words)', async () => {
+  expect(await combine([ONES_24, ONES_24, ONES_24])).toBe(ONES_24);
+  expect(
+    await combine([
+      ONES_24,
+      ONES_24,
+      ONES_24,
+      ONES_24,
+      ONES_24,
+      ONES_24,
+      ONES_24,
+    ]),
+  ).toBe(ONES_24);
+});
+
+test('XOR of odd number of identical ones seeds equals ones seed (12 words)', async () => {
+  expect(await combine([ONES_12, ONES_12, ONES_12])).toBe(ONES_12);
+  expect(
+    await combine([
+      ONES_12,
+      ONES_12,
+      ONES_12,
+      ONES_12,
+      ONES_12,
+      ONES_12,
+      ONES_12,
+    ]),
+  ).toBe(ONES_12);
+});
+
+test('XOR of even number of identical ones seeds equals zero seed (24 words)', async () => {
+  expect(await combine([ONES_24, ONES_24, ONES_24, ONES_24])).toBe(ZERO_24);
+});
+
+test('XOR of even number of identical ones seeds equals zero seed (12 words)', async () => {
+  expect(await combine([ONES_12, ONES_12, ONES_12, ONES_12])).toBe(ZERO_12);
+});
+
+test('XOR of two identical zero seeds equals zero seed (18 words)', async () => {
+  expect(await combine([ZERO_18, ZERO_18])).toBe(ZERO_18);
+});
+
+test('XOR of odd number of identical ones seeds equals ones seed (18 words)', async () => {
+  expect(await combine([ONES_18, ONES_18, ONES_18])).toBe(ONES_18);
+});
+
+test('XOR of even number of identical ones seeds equals zero seed (18 words)', async () => {
+  expect(await combine([ONES_18, ONES_18, ONES_18, ONES_18])).toBe(ZERO_18);
+});
+
+test('fail if share is invalid', async () => {
+  await expect(combine(['test', DOCS_SHARE_2, DOCS_SHARE_3])).rejects.toThrow(
+    '[SeedXOR]: Invalid mnemonic',
+  );
+});
+
+test('fail if share is invalid length', async () => {
+  await expect(
+    combine([
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
+      DOCS_SHARE_2,
+      DOCS_SHARE_3,
+    ]),
+  ).rejects.toThrow('[SeedXOR]: Not all mnemonics are the same length');
+});
+
+test('fail if seed is invalid', async () => {
+  await expect(split('abandon')).rejects.toThrow('[SeedXOR]: Invalid mnemonic');
+});
+
+test('fail if called with invalid number of shares', async () => {
+  await expect(split(DOCS_COMBINED, 5 as any)).rejects.toThrow(
+    '[SeedXOR]: Invalid number of shares',
+  );
+});
+
+test('fail if shares have different lengths', async () => {
+  const spy = vi.spyOn(utils, 'bitwiseXorHexString').mockReturnValue('1234');
+
+  await expect(split(LOCAL_TEST_12_COMBINED, 2)).rejects.toThrow(
+    '[SeedXOR]: Not all final shares are the same length',
+  );
+
+  spy.mockRestore();
 });
