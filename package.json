@@ -41,11 +41,10 @@
   },
   "homepage": "https://github.com/AndreasGassmann/seed-xor#readme",
   "dependencies": {
-    "bip39": "3.0.4",
-    "create-hash": "1.2.0"
+    "bip39": "3.1.0",
+    "@noble/hashes": "1.5.0"
   },
   "devDependencies": {
-    "@types/create-hash": "^1.2.2",
     "@types/node": "^18.7.14",
     "@types/tape": "^4.13.2",
     "@typescript-eslint/eslint-plugin": "^5.36.1",

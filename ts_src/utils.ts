@@ -1,5 +1,5 @@
 import * as bip39 from 'bip39';
-import * as createHash from 'create-hash';
+import { sha256 } from '@noble/hashes/sha256';
 
 export const toHexString = (bytes: Uint8Array): string =>
   bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
@@ -51,8 +51,7 @@ export const bitwiseXorHexString = (hexStrings: string[]): string => {
 };
 
 export const sha256Double = (data: Uint8Array | string): Uint8Array => {
-  const hash1 = createHash('sha256').update(data).digest();
-  return createHash('sha256').update(hash1).digest();
+  return sha256(sha256(data));
 };
 
 export const getRandomEntropy = async (length = 32): Promise<string> => {
