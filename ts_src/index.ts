@@ -6,9 +6,9 @@ import {
   mnemonicToEntropyLength,
   sha256Double,
   toHexString,
-} from './utils';
+} from './utils.js';
 
-export { split, combine } from './seed-xor';
+export { split, combine } from './seed-xor.js';
 
 const utils = {
   sha256Double,

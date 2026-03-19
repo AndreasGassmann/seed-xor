@@ -1,5 +1,5 @@
 import * as bip39 from 'bip39';
-import { sha256 } from '@noble/hashes/sha256';
+import { sha256 } from '@noble/hashes/sha2.js';
 
 export const toHexString = (bytes: Uint8Array): string =>
   bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
@@ -50,19 +50,15 @@ export const bitwiseXorHexString = (hexStrings: string[]): string => {
   return result;
 };
 
-export const sha256Double = (data: Uint8Array | string): Uint8Array => {
+export const sha256Double = (data: Uint8Array): Uint8Array => {
   return sha256(sha256(data));
 };
 
 export const getRandomEntropy = async (length = 32): Promise<string> => {
   const randomBuffer: Uint8Array = new Uint8Array(length);
 
-  if (typeof window !== 'undefined') {
-    window.crypto.getRandomValues(randomBuffer);
-  } else {
-    const webcrypto: Crypto = require('crypto').webcrypto; // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    webcrypto.getRandomValues(randomBuffer);
-  }
+  const cryptoImpl = globalThis.crypto ?? (await import('node:crypto')).webcrypto;
+  cryptoImpl.getRandomValues(randomBuffer);
 
   return toHexString(sha256Double(randomBuffer).slice(0, length));
 };

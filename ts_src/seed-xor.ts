@@ -4,7 +4,7 @@ import {
   getRandomEntropy,
   bitwiseXorHexString,
   mnemonicToEntropyLength,
-} from './utils';
+} from './utils.js';
 
 // https://github.com/Coldcard/firmware/blob/master/shared/xor_seed.py
 
