@@ -39,7 +39,7 @@ export const bitwiseXorHexString = (hexStrings) => {
         for (let x = 1; x < hexStrings.length; x++) {
             temp = temp ^ parseInt(hexStrings[x].charAt(index), 16);
         }
-        result += temp.toString(16).toUpperCase();
+        result += temp.toString(16);
     }
     return result;
 };
