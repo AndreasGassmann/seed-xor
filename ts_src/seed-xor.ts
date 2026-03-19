@@ -30,6 +30,7 @@ export const split = async (
       useRandom
         ? await getRandomEntropy(entropyLength)
         : await getDeterministicEntropyFromMnemonic(
+            'Batshitoshi ',
             mnemonic,
             i,
             numberOfShares,
