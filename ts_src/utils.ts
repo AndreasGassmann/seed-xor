@@ -68,12 +68,12 @@ export const getRandomEntropy = async (length = 32): Promise<string> => {
 };
 
 export const getDeterministicEntropyFromMnemonic = async (
+  salt: string,
   mnemonic: string,
   part: number,
   nofParts: number,
   entropyLength: number,
 ): Promise<string> => {
-  const salt = 'Batshitoshi ';
   const originalEntropy = bip39.mnemonicToEntropy(mnemonic);
   const partsText = `${part} of ${nofParts} parts`;
 
